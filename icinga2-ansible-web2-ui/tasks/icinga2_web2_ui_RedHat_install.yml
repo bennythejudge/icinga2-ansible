@@ -83,6 +83,79 @@
             group=icinga
             mode=0640
 
+- name: Create an icinga user icingaadmin with password
+  command: echo "INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('icingaadmin', 1, '{{ icinga_admin_password }}')" | mysql -p icinga2_web2_db
+  register: mysql_insert_output
+  when: icinga_admin_password is defined
+
+- name: Set PHP date.timezone 
+  lineinfile: dest=/etc/php.ini state=present regexp='^;date\.timezone' line='date.timezone="Europe/London"'
+
+- name: Fix SELinux context for /etc/icingaweb2 (make it writeable by apache)
+  command: "chcon -R -t httpd_sys_rw_content_t /etc/icingaweb2/"
+  register: chcon_result
+
+- name: Create the directory /etc/icingaweb2/modules/monitoring
+  file: path=/etc/icingaweb2/modules/monitoring state=directory mode=2770
+
+- name: Create the file /etc/icingaweb2/resources.ini
+  template: src=resources.ini.j2
+            dest=/etc/icingaweb2/resources.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+- name: Create the file /etc/icingaweb2/config.ini
+  template: src=config.ini.j2
+            dest=/etc/icingaweb2/config.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+- name: Create the file /etc/icingaweb2/authentication.ini
+  template: src=authentication.ini.j2
+            dest=/etc/icingaweb2/authentication.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+
+- name: Create the file /etc/icingaweb2/roles.ini
+  template: src=roles.ini.j2
+            dest=/etc/icingaweb2/roles.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+- name: Create the file /etc/icingaweb2/modules/monitoring/config.ini
+  template: src=modules/config.ini.j2
+            dest=/etc/icingaweb2/modules/monitoring/config.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+- name: Create the file /etc/icingaweb2/modules/monitoring/backends.ini
+  template: src=modules/backends.ini.j2
+            dest=/etc/icingaweb2/modules/monitoring/backends.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+- name: Create the file /etc/icingaweb2/modules/monitoring/commandtransports.ini
+  template: src=modules/commandtransports.ini.j2
+            dest=/etc/icingaweb2/modules/monitoring/commandtransports.ini
+            backup=yes
+            owner=root
+            group=icinga
+            mode=0640
+
+
 - name: Restart HTTPD and Icinga2 to Apply the Configuration
   service: name={{ item }}
            state=restarted
