@@ -103,7 +103,7 @@
             dest=/etc/icingaweb2/resources.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 - name: Create the file /etc/icingaweb2/config.ini
@@ -111,7 +111,7 @@
             dest=/etc/icingaweb2/config.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 - name: Create the file /etc/icingaweb2/authentication.ini
@@ -119,7 +119,7 @@
             dest=/etc/icingaweb2/authentication.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 
@@ -128,33 +128,32 @@
             dest=/etc/icingaweb2/roles.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 - name: Create the file /etc/icingaweb2/modules/monitoring/config.ini
-  template: src=modules/config.ini.j2
+  template: src=modules/monitoring/config.ini.j2
             dest=/etc/icingaweb2/modules/monitoring/config.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 - name: Create the file /etc/icingaweb2/modules/monitoring/backends.ini
-  template: src=modules/backends.ini.j2
+  template: src=modules/monitoring/backends.ini.j2
             dest=/etc/icingaweb2/modules/monitoring/backends.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
 
 - name: Create the file /etc/icingaweb2/modules/monitoring/commandtransports.ini
-  template: src=modules/commandtransports.ini.j2
+  template: src=modules/monitoring/commandtransports.ini.j2
             dest=/etc/icingaweb2/modules/monitoring/commandtransports.ini
             backup=yes
             owner=root
-            group=icinga
+            group=icingaweb2
             mode=0640
-
 
 - name: Restart HTTPD and Icinga2 to Apply the Configuration
   service: name={{ item }}
