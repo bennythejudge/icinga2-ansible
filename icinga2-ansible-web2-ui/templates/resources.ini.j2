@@ -1,0 +1,18 @@
+[icingaweb2]
+type                = "db"
+db                  = "mysql"
+host                = "localhost"
+port                = "3306"
+dbname              = "{{ icinga_web2_db_name }}"
+username            = "{{ icinga_web2_db_user }}"
+password            = "{{ icinga_web2_db_pass }}"
+
+
+[icinga2]
+type                = "db"
+db                  = "mysql"
+host                = "localhost"
+port                = "3306"
+dbname              = "{{ icinga2_db }}"
+username            = "{{ icinga2_db_user }}"
+password            = "{{ icinga2_db_pass }}"
