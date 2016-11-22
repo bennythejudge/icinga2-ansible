@@ -1,3 +1,12 @@
+### Modified #######
+
+I forked this repo to make some changes to it.
+In particular I needed to automated the installation/configuration of Web2 UI.
+The original version of the role requires to manually complete the configuration.
+I have provided a rudimentary automation of the final steps using files (under templates) mostly using hard-coded values.
+
+
+
 # About Icinga2 Ansible Roles
 
 ### What is an Ansible role?
