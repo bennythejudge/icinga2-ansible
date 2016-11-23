@@ -4,10 +4,6 @@
        state=latest
   when: ansible_pkg_mgr == "yum"
 
-- name: Install Icinga2 IDO modules on RedHat OS family (Fedora > 22)
-  dnf: name=icinga2-ido-mysql
-       state=latest
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Create a IDO Database for Icinga2
   mysql_db: name={{ icinga2_db }}
@@ -49,15 +45,6 @@
   tags: icinga2-ansible-web2-ui-install
   when: ansible_pkg_mgr == "yum"
 
-- name: Install Icinga Web2 on RedHat OS family
-  dnf: name={{ item.package }}
-       state=latest
-       enablerepo={{ enablerepo }}
-  with_items: "{{ icinga2_web2_ui_rpm }}"
-  tags: icinga2-ansible-web2-ui-install
-  when: ansible_pkg_mgr == "dnf"
-
-
 - name: Create a Web Database for Icinga2
   mysql_db: name={{ icinga2_web2_db }}
             state=present
@@ -83,10 +70,23 @@
             group=icinga
             mode=0640
 
-- name: Create an icinga user icingaadmin with password
-  command: echo "INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('icingaadmin', 1, '{{ icinga_admin_password }}')" | mysql -p icinga2_web2_db
-  register: mysql_insert_output
-  when: icinga_admin_password is defined
+- name: Create an sql file to insert icingaadmin in DB
+  template: src=insert_icingaadmin.sql.j2
+            dest=/tmp/insert_icingaadmin.sql
+            mode=0644
+
+- name: Import sql to create the icingaadmin
+  mysql_db: state=import name={{ icinga2_web2_db }} target=/tmp/insert_icingaadmin.sql
+  register: mysql_import_output
+  ignore_errors: yes
+
+# - name: Create an icinga user icingaadmin with password
+#   command: echo "INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('icingaadmin', 1, '{{ icinga_admin_password }}')" | mysql -p {{ icinga2_web2_db }}
+#   register: mysql_insert_output
+#   when: icinga_admin_password is defined
+
+- debug: var=mysql_import_output
+
 
 - name: Set PHP date.timezone 
   lineinfile: dest=/etc/php.ini state=present regexp='^;date\.timezone' line='date.timezone="Europe/London"'
