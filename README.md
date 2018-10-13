@@ -1,5 +1,7 @@
 ### Modified #######
 
+[![GuardRails badge](https://badges.production.guardrails.io/bennythejudge/icinga2-ansible.svg)](https://www.guardrails.io)
+
 I forked this repo to make some changes to it.
 In particular I needed to automated the installation/configuration of Web2 UI.
 The original version of the role requires to manually complete the configuration.
